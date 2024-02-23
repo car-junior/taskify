@@ -3,6 +3,7 @@ package br.com.taskify.domain.service;
 import br.com.taskify.domain.entity.Task;
 import br.com.taskify.domain.entity.enums.TaskPriority;
 import br.com.taskify.domain.entity.enums.TaskStatus;
+import br.com.taskify.domain.infrastructure.CustomException;
 import br.com.taskify.domain.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,10 +14,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static br.com.taskify.domain.entity.enums.TaskStatus.IN_PROGRESS;
+import static br.com.taskify.domain.entity.enums.TaskStatus.NOT_STARTED;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class) // Add suporte do mockito para class
 class TaskServiceTest {
@@ -35,7 +39,6 @@ class TaskServiceTest {
                 .createdDate(LocalDate.now())
                 .build();
     }
-
 
     @Test
     void testGivenTask_whenCreateTask_thenReturnSavedTask() {
@@ -60,5 +63,22 @@ class TaskServiceTest {
         assertEquals(1L, savedTask.getId());
         assertEquals(TaskStatus.NOT_STARTED, savedTask.getStatus());
         assertEquals(TaskPriority.LOW, savedTask.getPriority());
+    }
+
+    @Test
+    void testGivenExistingTaskName_whenCreateTask_thenThrowsCustomException() {
+        // Given / Arrange
+        given(taskRepository.existsByNameAndIdNotAndStatusNot(anyString(), anyLong(), any(TaskStatus.class)))
+                .willReturn(true);
+
+        // When / Act
+        var customException = assertThrows(CustomException.class, () -> taskService.createUpdateTask(taskOne));
+
+        // Then / Assert
+        assertEquals(
+                String.format("Already exists task with this name in %s or %s.", NOT_STARTED.getValue(), IN_PROGRESS.getValue()),
+                customException.getMessage()
+        );
+        verify(taskRepository, never()).save(taskOne);
     }
 }
