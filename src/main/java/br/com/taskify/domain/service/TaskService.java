@@ -1,6 +1,7 @@
 package br.com.taskify.domain.service;
 
 import br.com.taskify.domain.entity.Task;
+import br.com.taskify.domain.entity.enums.TaskPriority;
 import br.com.taskify.domain.infrastructure.CustomException;
 import br.com.taskify.domain.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,11 @@ public class TaskService {
 
     public Task createTask(Task task) {
         validation(task);
-        return taskRepository.save(task);
+        return taskRepository.save(task.toBuilder()
+                .priority(Optional.ofNullable(task.getPriority()).orElse(TaskPriority.LOW))
+                .createdDate(LocalDate.now())
+                .build()
+        );
     }
 
     public Task updateTask(long taskId, Task updatedTask) {
@@ -28,7 +33,6 @@ public class TaskService {
         validation(updatedTask);
         return taskRepository.save(task.toBuilder()
                 .name(updatedTask.getName())
-                .status(updatedTask.getStatus())
                 .priority(updatedTask.getPriority())
                 .comments(updatedTask.getComments())
                 .description(updatedTask.getDescription())
@@ -56,7 +60,8 @@ public class TaskService {
             throw CustomException.builder()
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .message(String.format(
-                            "Already exists task with this name in %s or %s.",
+                            "Already exists task %s %s or %s.",
+                            task.getName(),
                             NOT_STARTED.getValue(),
                             IN_PROGRESS.getValue())
                     )

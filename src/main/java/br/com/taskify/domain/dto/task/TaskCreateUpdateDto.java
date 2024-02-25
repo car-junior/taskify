@@ -26,8 +26,5 @@ public class TaskCreateUpdateDto {
     private String description;
 
     @NotNull(groups = Update.class)
-    private TaskStatus status;
-
-    @NotNull(groups = Update.class)
     private TaskPriority priority;
 }
