@@ -1,5 +1,6 @@
 package br.com.taskify.domain.dto.task;
 
+import br.com.taskify.domain.entity.enums.TaskPriority;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -9,10 +10,11 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskCreateDto {
+public class TaskCreateUpdateDto {
     @NotNull
     @NotEmpty
     private String name;
-    private String description;
     private String comments;
+    private String description;
+    private TaskPriority priority;
 }

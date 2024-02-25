@@ -37,7 +37,20 @@ public class TaskService {
     // Methods Privates
 
     private void validation(Task task) {
+        assertExistsTaskWhenIsEdition();
         assertNameNotExists(task);
+    }
+
+    private void assertExistsTaskWhenIsEdition(long taskId) {
+        if (taskRepository.existsByNameAndIdNotAndStatusNot(task.getName(), task.getId(), FINISHED))
+            throw CustomException.builder()
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message(String.format(
+                            "Already exists task with this name in %s or %s.",
+                            NOT_STARTED.getValue(),
+                            IN_PROGRESS.getValue())
+                    )
+                    .build();
     }
 
     private void assertNameNotExists(Task task) {
