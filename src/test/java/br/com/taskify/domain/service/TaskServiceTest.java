@@ -55,7 +55,7 @@ class TaskServiceTest {
                 );
 
         // When / Act
-        var savedTask = taskService.createUpdateTask(taskOne);
+        var savedTask = taskService.createTask(taskOne);
 
         // Then / Assert
         assertNotNull(savedTask);
@@ -72,7 +72,7 @@ class TaskServiceTest {
                 .willReturn(true);
 
         // When / Act
-        var customException = assertThrows(CustomException.class, () -> taskService.createUpdateTask(taskOne));
+        var customException = assertThrows(CustomException.class, () -> taskService.createTask(taskOne));
 
         // Then / Assert
         assertEquals(

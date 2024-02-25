@@ -1,7 +1,6 @@
 package br.com.taskify.domain.service;
 
 import br.com.taskify.domain.entity.Task;
-import br.com.taskify.domain.entity.enums.TaskStatus;
 import br.com.taskify.domain.infrastructure.CustomException;
 import br.com.taskify.domain.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static br.com.taskify.domain.entity.enums.TaskStatus.*;
 
@@ -17,10 +17,21 @@ import static br.com.taskify.domain.entity.enums.TaskStatus.*;
 public class TaskService {
     private final TaskRepository taskRepository;
 
-    public Task createUpdateTask(Task task) {
+    public Task createTask(Task task) {
         validation(task);
+        return taskRepository.save(task);
+    }
+
+    public Task updateTask(long taskId, Task updatedTask) {
+        var task = getTaskById(taskId);
+        updatedTask.setId(taskId);
+        validation(updatedTask);
         return taskRepository.save(task.toBuilder()
-                .createdDate(LocalDate.now())
+                .name(updatedTask.getName())
+                .status(updatedTask.getStatus())
+                .priority(updatedTask.getPriority())
+                .comments(updatedTask.getComments())
+                .description(updatedTask.getDescription())
                 .build()
         );
     }
@@ -37,20 +48,7 @@ public class TaskService {
     // Methods Privates
 
     private void validation(Task task) {
-        assertExistsTaskWhenIsEdition();
         assertNameNotExists(task);
-    }
-
-    private void assertExistsTaskWhenIsEdition(long taskId) {
-        if (taskRepository.existsByNameAndIdNotAndStatusNot(task.getName(), task.getId(), FINISHED))
-            throw CustomException.builder()
-                    .httpStatus(HttpStatus.BAD_REQUEST)
-                    .message(String.format(
-                            "Already exists task with this name in %s or %s.",
-                            NOT_STARTED.getValue(),
-                            IN_PROGRESS.getValue())
-                    )
-                    .build();
     }
 
     private void assertNameNotExists(Task task) {
