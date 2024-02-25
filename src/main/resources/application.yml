@@ -4,7 +4,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -13,3 +13,14 @@ spring:
     url: jdbc:postgresql://127.0.0.1:5432/dbo?reWriteBatchedInserts=true
     username: postgres
     password: postgres
+  jackson:
+    default-property-inclusion: non_null
+    locale: pt_BR
+    time-zone: America/Sao_Paulo
+    serialization:
+      write-dates-as-timestamps: false
+      indent_output: true
+      fail_on_empty_beans: false
+#     deserialization:
+#       fail_on_unknown_properties: false
+#       fail_on_null_for_primitives: false

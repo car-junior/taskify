@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 import static br.com.taskify.domain.entity.enums.TaskStatus.*;
 
 @Service
@@ -17,7 +19,19 @@ public class TaskService {
 
     public Task createUpdateTask(Task task) {
         validation(task);
-        return taskRepository.save(task);
+        return taskRepository.save(task.toBuilder()
+                .createdDate(LocalDate.now())
+                .build()
+        );
+    }
+
+    public Task getTaskById(Long taskId) {
+        return taskRepository.findById(taskId)
+                .orElseThrow(() -> CustomException.builder()
+                        .httpStatus(HttpStatus.NOT_FOUND)
+                        .message(String.format("Cannot found task with ID: %d", taskId))
+                        .build()
+                );
     }
 
     // Methods Privates
@@ -37,4 +51,5 @@ public class TaskService {
                     )
                     .build();
     }
+
 }
