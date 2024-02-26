@@ -58,4 +58,13 @@ public class TaskController {
         var tasks = taskService.getAllTask(taskSearch);
         return ResponseEntity.ok(modelMapperService.toList(TaskListDto.class, tasks));
     }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable(name = "taskId") Long taskId) {
+        taskService.deleteTaskById(taskId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Criar endpoint para mudar status da task
+
 }

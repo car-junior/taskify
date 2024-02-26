@@ -55,6 +55,10 @@ public class TaskService {
     public List<Task> getAllTask(TaskSearch taskSearch) {
         return taskRepository.findAll(TaskSpecification.getAll(taskSearch));
     }
+    public void deleteTaskById(Long taskId) {
+        assertExistsTask(taskId);
+        taskRepository.deleteById(taskId);
+    }
 
     // Methods Privates
 
@@ -75,4 +79,11 @@ public class TaskService {
                     .build();
     }
 
+    private void assertExistsTask(long taskId) {
+        if (!taskRepository.existsById(taskId))
+            throw CustomException.builder()
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message(String.format("Cannot found task with ID %d.", taskId))
+                    .build();
+    }
 }
