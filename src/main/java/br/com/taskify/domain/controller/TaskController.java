@@ -6,8 +6,11 @@ import br.com.taskify.domain.dto.task.TaskListDto;
 import br.com.taskify.domain.dto.task.groups.Create;
 import br.com.taskify.domain.dto.task.groups.Update;
 import br.com.taskify.domain.entity.Task;
+import br.com.taskify.domain.entity.enums.TaskPriority;
+import br.com.taskify.domain.entity.enums.TaskStatus;
 import br.com.taskify.domain.service.ModelMapperService;
 import br.com.taskify.domain.service.TaskService;
+import br.com.taskify.domain.spec.search.TaskSearch;
 import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +48,14 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskListDto>> getAllTask() {
-        var tasks = taskService.getAllTask();
+    public ResponseEntity<List<TaskListDto>> getAllTask(
+            @RequestParam(name = "status", required = false) TaskStatus status,
+            @RequestParam(name = "priority", required = false) TaskPriority priority) {
+        var taskSearch = TaskSearch.builder()
+                .status(status)
+                .priority(priority)
+                .build();
+        var tasks = taskService.getAllTask(taskSearch);
         return ResponseEntity.ok(modelMapperService.toList(TaskListDto.class, tasks));
     }
 }

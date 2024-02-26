@@ -4,6 +4,8 @@ import br.com.taskify.domain.entity.Task;
 import br.com.taskify.domain.entity.enums.TaskPriority;
 import br.com.taskify.domain.infrastructure.CustomException;
 import br.com.taskify.domain.repository.TaskRepository;
+import br.com.taskify.domain.spec.TaskSpecification;
+import br.com.taskify.domain.spec.search.TaskSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -50,8 +52,8 @@ public class TaskService {
                 );
     }
 
-    public List<Task> getAllTask() {
-        return taskRepository.findAll();
+    public List<Task> getAllTask(TaskSearch taskSearch) {
+        return taskRepository.findAll(TaskSpecification.getAll(taskSearch));
     }
 
     // Methods Privates
