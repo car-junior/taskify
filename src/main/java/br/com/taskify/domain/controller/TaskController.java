@@ -13,10 +13,12 @@ import br.com.taskify.domain.service.TaskService;
 import br.com.taskify.domain.spec.search.TaskSearch;
 import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -50,10 +52,14 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<TaskListDto>> getAllTask(
             @RequestParam(name = "status", required = false) TaskStatus status,
-            @RequestParam(name = "priority", required = false) TaskPriority priority) {
+            @RequestParam(name = "priority", required = false) TaskPriority priority,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         var taskSearch = TaskSearch.builder()
                 .status(status)
                 .priority(priority)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
         var tasks = taskService.getAllTask(taskSearch);
         return ResponseEntity.ok(modelMapperService.toList(TaskListDto.class, tasks));
