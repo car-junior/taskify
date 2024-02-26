@@ -2,6 +2,7 @@ package br.com.taskify.domain.service;
 
 import br.com.taskify.domain.entity.Task;
 import br.com.taskify.domain.entity.enums.TaskPriority;
+import br.com.taskify.domain.entity.enums.TaskStatus;
 import br.com.taskify.domain.infrastructure.CustomException;
 import br.com.taskify.domain.repository.TaskRepository;
 import br.com.taskify.domain.spec.TaskSpecification;
@@ -55,9 +56,16 @@ public class TaskService {
     public List<Task> getAllTask(TaskSearch taskSearch) {
         return taskRepository.findAll(TaskSpecification.getAll(taskSearch));
     }
+
     public void deleteTaskById(Long taskId) {
         assertExistsTask(taskId);
         taskRepository.deleteById(taskId);
+    }
+
+    public void changeStatusById(TaskStatus newStatus, Long taskId) {
+        var task = getTaskById(taskId);
+        assertChangeStatus(task, newStatus);
+        taskRepository.updateStatusById(newStatus, task.getId());
     }
 
     // Methods Privates
@@ -84,6 +92,15 @@ public class TaskService {
             throw CustomException.builder()
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .message(String.format("Cannot found task with ID %d.", taskId))
+                    .build();
+    }
+
+    private void assertChangeStatus(Task task, TaskStatus newStatus) {
+        var canChangeTo = task.getStatus().getCanChangeTo().contains(newStatus);
+        if (!canChangeTo)
+            throw CustomException.builder()
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message(String.format("Cannot change status %s to %s.", task.getStatus(), newStatus))
                     .build();
     }
 }

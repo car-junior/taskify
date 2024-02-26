@@ -11,6 +11,7 @@ import br.com.taskify.domain.entity.enums.TaskStatus;
 import br.com.taskify.domain.service.ModelMapperService;
 import br.com.taskify.domain.service.TaskService;
 import br.com.taskify.domain.spec.search.TaskSearch;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,6 +74,12 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    // Criar endpoint para mudar status da task
+    @PatchMapping("/{taskId}/change-status")
+    public ResponseEntity<Void> changeStatus(@PathVariable(name = "taskId") Long taskId,
+                                             @RequestParam(name = "status") TaskStatus status) {
+        taskService.changeStatusById(status, taskId);
+        return ResponseEntity.noContent().build();
+    }
 
+    // Estudar sobre isso Illegal forward reference relacionado a enums
 }
