@@ -51,11 +51,13 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<List<TaskListDto>> getAllTask(
+            @RequestParam(name = "query", required = false) String query,
             @RequestParam(name = "status", required = false) TaskStatus status,
             @RequestParam(name = "priority", required = false) TaskPriority priority,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         var taskSearch = TaskSearch.builder()
+                .query(query)
                 .status(status)
                 .priority(priority)
                 .startDate(startDate)
