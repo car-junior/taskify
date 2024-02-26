@@ -7,9 +7,8 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
-import static br.com.taskify.domain.utility.Utils.formatToLike;
+import static br.com.taskify.domain.utility.Utils.*;
 
 public class TaskSpecification {
     private TaskSpecification() {
@@ -19,35 +18,35 @@ public class TaskSpecification {
         return (root, query, builder) -> {
             var predicates = new ArrayList<Predicate>();
 
-            if (Optional.ofNullable(taskSearch.getQuery()).isPresent() && !taskSearch.getQuery().isEmpty()) {
+            if (isNotEmpty(taskSearch.getQuery())) {
                 predicates.add(builder.or(
                         builder.like(
-                                builder.lower(builder.function("unaccent", String.class, root.get(Task_.NAME))),
+                                builder.lower(builder.function(UNACCENT, String.class, root.get(Task_.NAME))),
                                 formatToLike(taskSearch.getQuery())
                         ),
                         builder.like(
-                                builder.lower(builder.function("unaccent", String.class, root.get(Task_.DESCRIPTION))),
+                                builder.lower(builder.function(UNACCENT, String.class, root.get(Task_.DESCRIPTION))),
                                 formatToLike(taskSearch.getQuery())
                         ),
                         builder.like(
-                                builder.lower(builder.function("unaccent", String.class, root.get(Task_.COMMENTS))),
+                                builder.lower(builder.function(UNACCENT, String.class, root.get(Task_.COMMENTS))),
                                 formatToLike(taskSearch.getQuery())
                         )
                 ));
             }
 
-            if (Optional.ofNullable(taskSearch.getStatus()).isPresent())
+            if (isPresent(taskSearch.getStatus()))
                 predicates.add(builder.equal(root.get(Task_.STATUS), taskSearch.getStatus()));
 
-            if (Optional.ofNullable(taskSearch.getPriority()).isPresent())
+            if (isPresent(taskSearch.getPriority()))
                 predicates.add(builder.equal(root.get(Task_.PRIORITY), taskSearch.getPriority()));
 
-            if (Optional.ofNullable(taskSearch.getStartDate()).isPresent())
+            if (isPresent(taskSearch.getStartDate()))
                 predicates.add(
                         builder.and(builder.greaterThanOrEqualTo(root.get(Task_.CREATED_DATE), taskSearch.getStartDate()))
                 );
 
-            if (Optional.ofNullable(taskSearch.getEndDate()).isPresent())
+            if (isPresent(taskSearch.getEndDate()))
                 predicates.add(
                         builder.and(builder.lessThanOrEqualTo(root.get(Task_.CREATED_DATE), taskSearch.getStartDate()))
                 );
