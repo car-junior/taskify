@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static br.com.taskify.domain.entity.enums.TaskStatus.*;
@@ -47,6 +48,10 @@ public class TaskService {
                         .message(String.format("Cannot found task with ID: %d", taskId))
                         .build()
                 );
+    }
+
+    public List<Task> getAllTask() {
+        return taskRepository.findAll();
     }
 
     // Methods Privates

@@ -2,6 +2,7 @@ package br.com.taskify.domain.controller;
 
 import br.com.taskify.domain.dto.task.TaskCreateUpdateDto;
 import br.com.taskify.domain.dto.task.TaskDetailDto;
+import br.com.taskify.domain.dto.task.TaskListDto;
 import br.com.taskify.domain.dto.task.groups.Create;
 import br.com.taskify.domain.dto.task.groups.Update;
 import br.com.taskify.domain.entity.Task;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("tasks")
@@ -39,5 +42,11 @@ public class TaskController {
             @Validated({Create.class, Update.class}) @RequestBody TaskCreateUpdateDto taskUpdateDto) {
         var task = taskService.updateTask(taskId, modelMapperService.toObject(Task.class, taskUpdateDto));
         return ResponseEntity.ok(modelMapperService.toObject(TaskDetailDto.class, task));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TaskListDto>> getAllTask() {
+        var tasks = taskService.getAllTask();
+        return ResponseEntity.ok(modelMapperService.toList(TaskListDto.class, tasks));
     }
 }
