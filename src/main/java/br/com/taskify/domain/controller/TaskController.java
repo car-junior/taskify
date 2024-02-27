@@ -79,7 +79,6 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    // Estudar sobre isso Illegal forward reference relacionado a enums
     // Adicionar Swagger
     // Adicionar gitlab-ci
     // Fazer testes unitários
