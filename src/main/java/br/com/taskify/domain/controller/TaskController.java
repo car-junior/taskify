@@ -11,8 +11,6 @@ import br.com.taskify.domain.entity.enums.TaskStatus;
 import br.com.taskify.domain.service.ModelMapperService;
 import br.com.taskify.domain.service.TaskService;
 import br.com.taskify.domain.spec.search.TaskSearch;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -82,4 +80,8 @@ public class TaskController {
     }
 
     // Estudar sobre isso Illegal forward reference relacionado a enums
+    // Adicionar Swagger
+    // Adicionar gitlab-ci
+    // Fazer testes unitários
+    // Fazer testes de integração
 }

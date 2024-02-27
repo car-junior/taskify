@@ -12,8 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static br.com.taskify.domain.entity.enums.TaskStatus.*;
 
@@ -21,6 +20,11 @@ import static br.com.taskify.domain.entity.enums.TaskStatus.*;
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final Map<TaskStatus, Set<TaskStatus>> statusCanChangeTo = Map.of(
+            NOT_STARTED, Set.of(IN_PROGRESS, FINISHED),
+            IN_PROGRESS, Set.of(FINISHED),
+            FINISHED, Collections.emptySet()
+    );
 
     public Task createTask(Task task) {
         validation(task);
@@ -96,7 +100,18 @@ public class TaskService {
     }
 
     private void assertChangeStatus(Task task, TaskStatus newStatus) {
-        var canChangeTo = task.getStatus().getCanChangeTo().contains(newStatus);
+        var statuses = statusCanChangeTo.entrySet()
+                .stream()
+                .filter(it -> it.getKey().equals(task.getStatus()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseThrow(() -> CustomException.builder()
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .message(String.format("Cannot found status %s to change.", task.getStatus()))
+                        .build());
+
+        var canChangeTo = statuses.contains(newStatus);
+
         if (!canChangeTo)
             throw CustomException.builder()
                     .httpStatus(HttpStatus.BAD_REQUEST)
