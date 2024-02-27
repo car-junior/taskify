@@ -79,7 +79,6 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    // Adicionar Swagger
     // Adicionar gitlab-ci
     // Fazer testes unitários
     // Fazer testes de integração
