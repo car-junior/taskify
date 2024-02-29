@@ -1,4 +1,6 @@
 image: maven:3.9.6-amazoncorretto-17
+variables:
+  MAVEN_CLI_OPTS: "--batch-mode --errors --show-version"
 stages:
   - build
   - test
@@ -7,8 +9,8 @@ stages:
 
 maven-build:
   stage: build
-  script: "mvn compile"
+  script: "mvn $MAVEN_CLI_OPTS compile"
 
 unit-tests:
   stage: test
-  script: "mvn test"
+  script: "mvn $MAVEN_CLI_OPTS test"
