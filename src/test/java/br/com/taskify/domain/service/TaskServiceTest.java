@@ -77,7 +77,12 @@ class TaskServiceTest {
 
         // Then / Assert
         assertEquals(
-                String.format("Already exists task with this name in %s or %s.", NOT_STARTED.getValue(), IN_PROGRESS.getValue()),
+                String.format(
+                        "Already exists task %s %s or %s.",
+                        taskOne.getName(),
+                        NOT_STARTED.getValue(),
+                        IN_PROGRESS.getValue()
+                ),
                 customException.getMessage()
         );
         verify(taskRepository, never()).save(taskOne);
@@ -85,8 +90,8 @@ class TaskServiceTest {
 
     @Test
     void testGivenTaskId_whenGetTaskById_thenReturnTaskDetailDto() {
-        // Given / Arrange
-        given(taskRepository.findById(anyLong()))
-                .willReturn(Task.builder().build());
+//        // Given / Arrange
+//        given(taskRepository.findById(anyLong()))
+//                .willReturn(Task.builder().build());
     }
 }
