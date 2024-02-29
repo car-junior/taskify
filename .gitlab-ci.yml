@@ -1,10 +1,14 @@
 image: maven:3.9.6-amazoncorretto-17
 stages:
   - build
-#   - test
+  - test
 #   - package
 #   - deploy
 
 maven-build:
   stage: build
   script: "mvn compile"
+
+unit-tests:
+  stage: test
+  script: "mvn test"
