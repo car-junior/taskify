@@ -1,5 +1,6 @@
 package br.com.taskify.domain.service;
 
+import br.com.taskify.domain.dto.task.TaskDetailDto;
 import br.com.taskify.domain.entity.Task;
 import br.com.taskify.domain.entity.enums.TaskPriority;
 import br.com.taskify.domain.entity.enums.TaskStatus;
@@ -80,5 +81,12 @@ class TaskServiceTest {
                 customException.getMessage()
         );
         verify(taskRepository, never()).save(taskOne);
+    }
+
+    @Test
+    void testGivenTaskId_whenGetTaskById_thenReturnTaskDetailDto() {
+        // Given / Arrange
+        given(taskRepository.findById(anyLong()))
+                .willReturn(Task.builder().build());
     }
 }
