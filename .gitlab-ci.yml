@@ -1,11 +1,11 @@
 image: maven:3.8.1-openjdk-17
 
-# cache:
-#  paths:
-#    - .m2/repository
+cache:
+ paths:
+   - .m2/repository
 
-# variables:
-#   MAVEN_CLI_OPTS: "--batch-mode --errors --show-version"
+variables:
+  MAVEN_CLI_OPTS: "--batch-mode --errors --show-version"
 
 stages:
   - build
@@ -15,8 +15,8 @@ stages:
 
 maven-build:
   stage: build
-  script: "mvn compile"
+  script: "mvn $MAVEN_CLI_OPTS compile"
 
 unit-tests:
   stage: test
-  script: "mvn test"
+  script: "mvn $MAVEN_CLI_OPTS test"
