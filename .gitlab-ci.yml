@@ -20,4 +20,4 @@ maven-build:
 
 unit-tests:
   stage: test
-  script: "mvn $MAVEN_CLI_OPTS test $MVN_REPOSITORY"
+  script: "mvn ${MAVEN_CLI_OPTS} test ${MVN_REPOSITORY}"
