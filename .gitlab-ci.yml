@@ -19,4 +19,4 @@ maven-build:
 
 unit-tests:
   stage: test
-  script: "mvn test"
+  script: "mvn install"
