@@ -9,15 +9,39 @@ variables:
   MVN_REPOSITORY: "-Dmaven.repo.local=.m2/repository"
 
 stages:
-  - build
+  - compile
   - test
-#   - package
+  - package
+  - build
 #   - deploy
 
-maven-build:
-  stage: build
-  script: "mvn $MAVEN_CLI_OPTS compile"
+maven-compile:
+  stage: compile
+  script: "mvn ${MAVEN_CLI_OPTS} compile"
 
-unit-tests:
+maven-test:
   stage: test
+  needs:
+    - maven-compile
   script: "mvn ${MAVEN_CLI_OPTS} test ${MVN_REPOSITORY}"
+
+maven-package:
+  stage: package
+  needs:
+    - maven-test
+  script: "mvn ${MAVEN_CLI_OPTS} package ${MVN_REPOSITORY}"
+  artifacts:
+    paths:
+      - target/taskify-1.0.0.jar
+
+docker-build:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
+  needs:
+    - maven-package
+  script:
+    - docker build -t cjrcordeiro/taskify:1.0.0 .
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - docker push cjrcordeiro/taskify:1.0.0
