@@ -13,7 +13,7 @@ stages:
   - test
   - package
   - build
-#   - deploy
+  - deploy
 
 maven-compile:
   stage: compile
@@ -45,3 +45,12 @@ docker-build:
     - docker build -t cjrcordeiro/taskify:1.0.0 .
     - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker push cjrcordeiro/taskify:1.0.0
+
+execute-deploy:
+  stage: deploy
+  needs:
+    - docker-build
+  tags:
+    - gcp-development
+  script:
+    - docker run -dti --name taskify -p 8080:8080 cjrcordeiro/taskify:1.0.0
