@@ -17,16 +17,22 @@ stages:
 
 maven-compile:
   stage: compile
+  tags:
+    - gcp-taskify-api
   script: "mvn ${MAVEN_CLI_OPTS} compile"
 
 maven-test:
   stage: test
+  tags:
+    - gcp-taskify-api
   needs:
     - maven-compile
   script: "mvn ${MAVEN_CLI_OPTS} test ${MVN_REPOSITORY}"
 
 maven-package:
   stage: package
+  tags:
+    - gcp-taskify-api
   needs:
     - maven-test
   script: "mvn ${MAVEN_CLI_OPTS} package ${MVN_REPOSITORY}"
@@ -36,6 +42,8 @@ maven-package:
 
 docker-build:
   image: docker:latest
+  tags:
+    - gcp-taskify-api
   services:
     - docker:dind
   stage: build
@@ -48,9 +56,11 @@ docker-build:
 
 execute-deploy:
   stage: deploy
+  tags:
+    - gcp-taskify-api
   needs:
     - docker-build
   tags:
-    - gcp-development
+    - gcp-taskify-api
   script:
     - docker run -dti --name taskify -p 8080:8080 cjrcordeiro/taskify:1.0.0
