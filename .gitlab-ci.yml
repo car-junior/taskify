@@ -1,3 +1,9 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH != "main"
+      when: never
+    - when: always
+
 image: maven:3.8.1-openjdk-17
 
 cache:
@@ -46,12 +52,13 @@ docker-build:
     - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker push cjrcordeiro/taskify:1.0.0
 
-# // usar shell e docker como execute em um mesmo gitlabrunner
 execute-deploy:
   stage: deploy
+  only:
+    - main
   tags:
     - gcp-taskify-api
   needs:
     - docker-build
   script:
-    - docker run -dti --name taskify -p 8080:8080 cjrcordeiro/taskify:1.0.0
+    - docker run -dti --env-file env_db.txt --name taskify -p 8080:8080 cjrcordeiro/taskify:1.0.0
