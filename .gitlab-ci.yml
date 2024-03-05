@@ -17,8 +17,6 @@ stages:
 
 maven-compile:
   stage: compile
-  tags:
-    - gcp-taskify-api
   script: "mvn ${MAVEN_CLI_OPTS} compile"
 
 maven-test:
