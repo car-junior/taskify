@@ -13,10 +13,6 @@ cache:
 variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --show-version"
   MVN_REPOSITORY: "-Dmaven.repo.local=.m2/repository"
-  DB_HOST: $POSTGRES_HOST
-  DB_PORT: $POSTGRES_PORT
-  DB_USER: $POSTGRES_USER
-  DB_PASSWORD: $POSTGRES_PASSWORD
 
 stages:
   - compile
@@ -65,10 +61,13 @@ execute-deploy:
   needs:
     - docker-build
   before_script:
-    - docker rm taskify 2>/dev/null
+    - export DB_HOST=$POSTGRES_HOST
+    - export DB_PORT=$POSTGRES_PORT
+    - export DB_USER=$POSTGRES_USER
+    - export DB_PASSWORD=$POSTGRES_PASSWORD
+    - env
   script:
-    - echo ${DB_HOST} ${DB_PORT} ${DB_USER} ${DB_PASSWORD}
     - docker run -dti \
-      -e POSTGRES_HOST=${DB_HOST} -e POSTGRES_PORT=${DB_PORT} \
-      -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} \
+      -e POSTGRES_HOST=$DB_HOST -e POSTGRES_PORT=$DB_PORT \
+      -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD \
       --name taskify -p 80:8080 cjrcordeiro/taskify:1.0.0
