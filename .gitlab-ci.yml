@@ -16,7 +16,6 @@ stages:
   - deploy
 
 maven-compile:
-  image: maven:3.8.1-openjdk-17
   stage: compile
   tags:
     - gcp-taskify-api
@@ -24,16 +23,12 @@ maven-compile:
 
 maven-test:
   stage: test
-  tags:
-    - gcp-taskify-api
   needs:
     - maven-compile
   script: "mvn ${MAVEN_CLI_OPTS} test ${MVN_REPOSITORY}"
 
 maven-package:
   stage: package
-  tags:
-    - gcp-taskify-api
   needs:
     - maven-test
   script: "mvn ${MAVEN_CLI_OPTS} package ${MVN_REPOSITORY}"
@@ -43,8 +38,6 @@ maven-package:
 
 docker-build:
   image: docker:latest
-  tags:
-    - gcp-taskify-api
   services:
     - docker:dind
   stage: build
@@ -55,13 +48,12 @@ docker-build:
     - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker push cjrcordeiro/taskify:1.0.0
 
+# // usar shell e docker como execute em um mesmo gitlabrunner
 execute-deploy:
   stage: deploy
   tags:
     - gcp-taskify-api
   needs:
     - docker-build
-  tags:
-    - gcp-taskify-api
   script:
     - docker run -dti --name taskify -p 8080:8080 cjrcordeiro/taskify:1.0.0
