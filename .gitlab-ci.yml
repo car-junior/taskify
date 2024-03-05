@@ -66,4 +66,5 @@ execute-deploy:
     - docker-build
   script:
     - echo ${POSTGRES_HOST} ${POSTGRES_USER}
+    - echo $POSTGRES_HOST
     - docker run -dti --env-file env_db.txt --name taskify -p 80:8080 cjrcordeiro/taskify:1.0.0
