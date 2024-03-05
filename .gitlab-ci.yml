@@ -13,10 +13,6 @@ cache:
 variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --show-version"
   MVN_REPOSITORY: "-Dmaven.repo.local=.m2/repository"
-  POSTGRES_HOST: $POSTGRES_HOST
-  POSTGRES_PORT: $POSTGRES_PORT
-  POSTGRES_USER: $POSTGRES_USER
-  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
 
 stages:
   - compile
@@ -64,7 +60,11 @@ execute-deploy:
     - gcp-taskify-api
   needs:
     - docker-build
+  before_script:
+    - docker rm taskify 2>/dev/null
   script:
-    - echo ${POSTGRES_HOST} ${POSTGRES_USER}
-    - echo $POSTGRES_HOST
-    - docker run -dti --env-file env_db.txt --name taskify -p 80:8080 cjrcordeiro/taskify:1.0.0
+    - docker run -dti -e POSTGRES_HOST=POSTGRES_HOST \
+                      -e POSTGRES_PORT=POSTGRES_PORT \
+                      -e POSTGRES_USER=POSTGRES_USER \
+                      -e POSTGRES_PASSWORD=POSTGRES_PASSWORD \
+                      --name taskify -p 80:8080 cjrcordeiro/taskify:1.0.0
