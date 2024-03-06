@@ -61,10 +61,10 @@ execute-deploy:
   needs:
     - docker-build
   variables:
-    - DB_HOST=$POSTGRES_HOST
-    - DB_PORT=$POSTGRES_PORT
-    - DB_USER=$POSTGRES_USER
-    - DB_PASSWORD=$POSTGRES_PASSWORD
+    - DB_HOST: $POSTGRES_HOST
+    - DB_PORT: $POSTGRES_PORT
+    - DB_USER: $POSTGRES_USER
+    - DB_PASSWORD: $POSTGRES_PASSWORD
   before_script:
     - docker rm taskify 2>/dev/null
   script:
