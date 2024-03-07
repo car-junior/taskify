@@ -60,18 +60,13 @@ execute-deploy:
     - gcp-taskify-api
   needs:
     - docker-build
-  variables:
-    DB_HOST: $POSTGRES_HOST
-    DB_PORT: $POSTGRES_PORT
-    DB_USER: $POSTGRES_USER
-    DB_PASSWORD: $POSTGRES_PASSWORD
   before_script:
     - chmod +x ./purge_old_container.sh
   script:
     - ./purge_old_container.sh
     - >
-     docker run -e POSTGRES_HOST=${DB_HOST}
-     -e POSTGRES_PORT=${DB_PORT}
-     -e POSTGRES_USER=${DB_USER}
-     -e POSTGRES_PASSWORD=${DB_PASSWORD}
+     docker run -e POSTGRES_HOST=$POSTGRES_HOST
+     -e POSTGRES_PORT=$POSTGRES_PORT
+     -e POSTGRES_USER=$POSTGRES_USER
+     -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD
      -dti --name taskify -p 80:8080 cjrcordeiro/taskify:1.0.0
