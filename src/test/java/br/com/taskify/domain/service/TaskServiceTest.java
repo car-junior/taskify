@@ -20,8 +20,7 @@ import static br.com.taskify.domain.entity.enums.TaskStatus.NOT_STARTED;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) // Add suporte do mockito para class
 class TaskServiceTest {
@@ -93,5 +92,17 @@ class TaskServiceTest {
 //        // Given / Arrange
 //        given(taskRepository.findById(anyLong()))
 //                .willReturn(Task.builder().build());
+    }
+
+    @Test
+    void testGivenTaskId_whenDeleteTaskById_thenDoNothing() {
+        // Given / Arrange
+        given(taskRepository.existsById(anyLong())).willReturn(true);
+
+        // When / Act
+        taskService.deleteTaskById(taskOne.getId());
+
+        // Then / Assert
+        verify(taskRepository, times(1)).deleteById(taskOne.getId());
     }
 }
