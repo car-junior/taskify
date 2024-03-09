@@ -33,6 +33,8 @@ maven-test:
 
 maven-package:
   stage: package
+  only:
+    - main
   needs:
     - maven-test
   script: "mvn ${MAVEN_CLI_OPTS} package ${MVN_REPOSITORY}"
@@ -42,6 +44,8 @@ maven-package:
 
 docker-build:
   image: docker:latest
+  only:
+    - main
   services:
     - docker:dind
   stage: build
