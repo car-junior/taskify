@@ -11,9 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
     boolean existsByNameAndIdNotAndStatusNot(String name, long id, TaskStatus status);
-
-    @Modifying
     @Transactional
-    @Query("UPDATE Task SET status = :status WHERE id = :id")
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE Task SET status = :status WHERE id = :id")
     void updateStatusById(@Param("status") TaskStatus status, @Param("id") long id);
 }

@@ -12,8 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Testcontainers
@@ -89,5 +88,18 @@ class TaskRepositoryTest extends TaskifyRepositoryIntegrationTestConfiguration {
 
         //Then
         assertFalse(result);
+    }
+
+    @Test
+    void testGivenTaskStatus_whenUpdateStatusById_thenDoNothing() {
+        // Given
+        var newStatus = TaskStatus.IN_PROGRESS;
+
+        // When
+        taskRepository.updateStatusById(newStatus, task.getId());
+
+        //Then
+        task = taskRepository.findById(task.getId()).get();
+        assertEquals(newStatus, task.getStatus());
     }
 }
