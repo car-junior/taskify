@@ -79,7 +79,7 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    // Adicionar gitlab-ci
+    //TODO: Criar posteriormente forma de voltar para imagem docker do gitlab quando a nova da problema
     // Fazer testes unitários
     // Fazer testes de integração
 }
