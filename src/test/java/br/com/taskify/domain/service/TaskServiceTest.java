@@ -105,4 +105,19 @@ class TaskServiceTest {
         // Then / Assert
         verify(taskRepository, times(1)).deleteById(taskOne.getId());
     }
+    @Test
+    void testGivenTaskIdNotExists_whenDeleteTaskById_thenDoNothingThrowCustomException() {
+        // Given / Arrange
+        var taskId = 1L;
+        given(taskRepository.existsById(anyLong())).willReturn(false);
+
+
+        // When / Act
+        var customException = assertThrows(CustomException.class, () -> taskService.deleteTaskById(taskId));
+
+        // Then / Assert
+        assertEquals(String.format("Cannot found task with ID %d.", taskId), customException.getMessage()
+        );
+        verify(taskRepository, never()).deleteById(taskId);
+    }
 }
